@@ -2,7 +2,7 @@
 Create BIM project on IPFS
 
 ## Analyza Data Develop as-builtBIM
-We do not have to capture reality in this project. The data analyzing and creating as-builtBIM is out of range of this project.
+We do not have possibility to capture reality in this project. The data analyzing and creating as-builtBIM is out of range of this project.
 I suggest to create some output of such an analize maybe in random way.
 
 ## Chainlink
