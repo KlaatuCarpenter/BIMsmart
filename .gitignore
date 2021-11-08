@@ -5,3 +5,4 @@ __pycache__
 build/
 reports/
 input_data_used_for_valuation
+.env.chainlinknode

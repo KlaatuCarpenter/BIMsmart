@@ -1,0 +1,3 @@
+-i https://pypi.org/simple
+openpyxl==3.0.9
+pandas==1.3.4
