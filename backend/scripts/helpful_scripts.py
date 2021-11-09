@@ -103,25 +103,25 @@ def get_contract(contract_name):
             Contract of the type specificed by the dictonary. This could be either
             a mock or the 'real' contract on a live network.
     """
-    contract_type = contract_to_mock[contract_name]
-    if network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
-        if len(contract_type) <= 0:
-            deploy_mocks()
-        contract = contract_type[-1]
-    else:
-        try:
-            contract_address = config["networks"][network.show_active()][contract_name]
-            contract = Contract.from_abi(
-                contract_type._name, contract_address, contract_type.abi
-            )
-        except KeyError:
-            print(
-                f"{network.show_active()} address not found, perhaps you should add it to the config or deploy mocks?"
-            )
-            print(
-                f"brownie run scripts/deploy_mocks.py --network {network.show_active()}"
-            )
-    return contract
+    # contract_type = contract_to_mock[contract_name]
+    # if network.show_active() in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+    #     if len(contract_type) <= 0:
+    #         deploy_mocks()
+    #     contract = contract_type[-1]
+    # else:
+    #     try:
+    #         contract_address = config["networks"][network.show_active()][contract_name]
+    #         contract = Contract.from_abi(
+    #             contract_type._name, contract_address, contract_type.abi
+    #         )
+    #     except KeyError:
+    #         print(
+    #             f"{network.show_active()} address not found, perhaps you should add it to the config or deploy mocks?"
+    #         )
+    #         print(
+    #             f"brownie run scripts/deploy_mocks.py --network {network.show_active()}"
+    #         )
+    # return contract
 
 
 # def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_PRICE_FEED_VALUE):
