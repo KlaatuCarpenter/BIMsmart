@@ -140,6 +140,7 @@ def test_receive_update(test_deploy_autonomous_payment_confirmed):
     
 
 def test_receive_update_if_input_data_validation_fails(test_deploy_autonomous_payment_confirmed):
+    """ Test a try to update and trigger payment with wrong data """
     smartContract = test_deploy_autonomous_payment_confirmed
     expectedValue = 10000000000000000
     with brownie.reverts():
@@ -165,9 +166,7 @@ def test_receive_update_if_input_data_validation_fails(test_deploy_autonomous_pa
     assert smartContract.getContractBalance() == contractValue
 
 def test_issue_lien_token_if_contract_balance_is_insufficient(test_deploy_autonomous_payment_confirmed):
-    """ 
-        Testing receiving update and processing Lien Token if contract balance is insufficient
-    """
+    """ Testing receiving update and processing Lien Token if contract balance is insufficient """
     smartContract = test_deploy_autonomous_payment_confirmed
     expectedValue = 1000000000000000000000000
     update = smartContract.receiveUpdate(

@@ -9,10 +9,6 @@ def deploy_autonomous_payment():
     projectName = "Panorama"
     projectNameShorthand = "PAN"
 
-    CID_listOfElementsAndGUIDs = "fff"
-    CID_scheduleOfValues = "ggg"
-    CID_solutionUsedForProgressEvaluation = "hhh"
-
     # deploy contract
     return AutonomousPayment.deploy(
         projectName, 
