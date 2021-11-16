@@ -6,19 +6,6 @@
     Next the provided progress evaluation with the value of work done is provided to blockchain with ipfshashes of files used in process.
     Smart contract makes a transaction to subcontractor.
 
-Initial data:
-Zero payment:
-$data = @{data = @{
-    paymentID="0";
-    CID_scheduleOfValues="bafybeicnte25pfv73l2eqmbmpfod3s4fll3gmjq7stungyv7755i6uddsm";
-    CID_listOfElementsAndGUIDs="CID_listOfElementsAndGUIDs";
-    CID_asBuiltBIM="";
-    CID_rawProgressData="";
-    CID_previousPaymentProgress=""
-    }
-}
-$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081/0
-
 First payment:
 $data = @{data = @{
     paymentID="1";
@@ -26,10 +13,10 @@ $data = @{data = @{
     CID_listOfElementsAndGUIDs="CID_listOfElementsAndGUIDs";
     CID_asBuiltBIM="CID_asBuiltBIM";
     CID_rawProgressData="CID_rawProgressData";
-    CID_previousPaymentProgress="bafybeifq2wtyjhje2w6svd2myacdqcoqw3eh7o66edl33vddtbz53ycc24"
+    CID_previousPaymentProgress=""
     }
 }
-$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081/1
+$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081/
 
 Second payment:
 $data = @{data = @{
@@ -38,10 +25,23 @@ $data = @{data = @{
     CID_listOfElementsAndGUIDs="CID_listOfElementsAndGUIDs";
     CID_asBuiltBIM="CID_asBuiltBIM";
     CID_rawProgressData="CID_rawProgressData";
-    CID_previousPaymentProgress="bafybeiaa7aqz5xoksly73l5axzsx3mgerffshk7n7v26xxfwwqt4cweag4"
+    CID_previousPaymentProgress="bafybeicoglxdlgkd5jhwo3ydwbkkdnfm5sfhobumozmw24ethkdxpeborq"
     }
 }
-$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081/2
+$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081
+
+### output form first payment
+{
+  "CID_asBuiltBIM": "bafybeicoglxdlgkd5jhwo3ydwbkkdnfm5sfhobumozmw24ethkdxpeborq",
+  "CID_currentPaymentProgress": "bafybeicoglxdlgkd5jhwo3ydwbkkdnfm5sfhobumozmw24ethkdxpeborq",
+  "CID_listOfElementsAndGUIDs": "CID_listOfElementsAndGUIDs",
+  "CID_rawProgressData": "CID_rawProgressData",
+  "CID_scheduleOfValues": "bafybeicnte25pfv73l2eqmbmpfod3s4fll3gmjq7stungyv7755i6uddsm",
+  "CID_solutionUsedForProgressEvaluation": "bafybeih77n5qevwt4b4dox5vb54ck2gas22lidvn2aomjgudhinp4ftkta",
+  "paymentID": "1",
+  "statusCode": 200,
+  "value": 620982
+}
 
 
 https://ipfs.fleek.co/ipfs/bafybeiff2pk4sgzkdk7rmthhr7fbshr2n4zes43ct2ngmit7dwpxabl2pe

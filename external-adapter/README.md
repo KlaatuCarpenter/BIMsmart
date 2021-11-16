@@ -32,6 +32,12 @@ docker run -it -p 8080:8080 cl-ea
 
 ## Run with Serverless
 
+## Call the external adapter/API server
+$data = @{id = 0; data = @{from = "ETH"; to = "USD"}}
+
+$data | ConvertTo-Json -Compress | curl.exe -X POST -H "content-type:application/json" -d "@-" http://localhost:8082/
+
+
 ### Create the zip
 
 ```bash

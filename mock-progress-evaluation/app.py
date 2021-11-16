@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from resources.api import Initial, Update
+from resources.api import Update
 
 
 app = Flask(__name__)
@@ -48,14 +48,14 @@ app = Flask(__name__)
 #     </form>
 #     '''
 
-@app.route('/0', methods=["POST"])
-def create_initial_docs_app():
-     input_json = request.get_json(force=True)
-     initial = Initial(input_json)
-     return initial.result
+# @app.route('/', methods=["POST"])
+# def create_initial_docs_app():
+#      input_json = request.get_json(force=True)
+#      initial = Initial(input_json)
+#      return initial.result
 
-@app.route('/<int:paymentID>', methods=["POST"])
-def update_payment_app(paymentID):
+@app.route('/', methods=["POST"])
+def update_payment_app():
      input_json = request.get_json(force=True)
      update = Update(input_json)
      return update.result
