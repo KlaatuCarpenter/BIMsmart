@@ -8,7 +8,7 @@
 
 First payment:
 $data = @{data = @{
-    paymentID="1";
+    paymentID=1;
     CID_scheduleOfValues="bafybeicnte25pfv73l2eqmbmpfod3s4fll3gmjq7stungyv7755i6uddsm";
     CID_listOfElementsAndGUIDs="CID_listOfElementsAndGUIDs";
     CID_asBuiltBIM="CID_asBuiltBIM";
@@ -16,19 +16,18 @@ $data = @{data = @{
     CID_previousPaymentProgress=""
     }
 }
-$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081/
+$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://localhost:8081/
 
 Second payment:
 $data = @{data = @{
-    paymentID="2";
+    paymentID=2;
     CID_scheduleOfValues="bafybeicnte25pfv73l2eqmbmpfod3s4fll3gmjq7stungyv7755i6uddsm";
     CID_listOfElementsAndGUIDs="CID_listOfElementsAndGUIDs";
     CID_asBuiltBIM="CID_asBuiltBIM";
     CID_rawProgressData="CID_rawProgressData";
-    CID_previousPaymentProgress="bafybeicoglxdlgkd5jhwo3ydwbkkdnfm5sfhobumozmw24ethkdxpeborq"
+    CID_previousPaymentProgress="bafybeif6el6gbcmvuty7etuqdvqcrr6jzsb7vctpsx3ixlkvqgnpqr2zxi"
     }
 }
-$data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: application/json" -d "@-" http://192.168.2.174:8081
 
 ### output form first payment
 {
@@ -44,7 +43,8 @@ $data | ConvertTo-Json -Compress | curl.exe -X POST -H "Content-Type: applicatio
 }
 
 
-https://ipfs.fleek.co/ipfs/bafybeiff2pk4sgzkdk7rmthhr7fbshr2n4zes43ct2ngmit7dwpxabl2pe
+https://ipfs.fleek.co/ipfs/bafybeif6el6gbcmvuty7etuqdvqcrr6jzsb7vctpsx3ixlkvqgnpqr2zxi
+https://ipfs.fleek.co/ipfs/QmSQxKure7qPjwZkvVFKNMiaqMqhXUikbXkAwVzdqzt3r9
 
 
 # "CID_solutionUsedForProgressEvaluation": "bafybeihrlaneadhrlgwykrtda7olpk4leqpk2vbmtz5w34fmi2bdns67s4",

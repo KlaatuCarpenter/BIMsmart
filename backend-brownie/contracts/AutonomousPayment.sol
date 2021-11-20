@@ -1,22 +1,35 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
 /// @title Smart contract for settlement a contract betweeen contractor and subcontractor
-/// @author Klaatu Carpenter
+/// @author Damian Piorun @KlaatuCarpenter
 /// @notice this contract is suitable just for two users: contractor and subcontractor
 /// @custom:experimental This is experimental contract
-contract AutonomousPayment is Ownable, ERC721URIStorage {
+contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
 
-  address payable public subcontractor;
+  using Chainlink for Chainlink.Request;
+  address private oracle;
+  bytes32 private jobId;
+  uint256 private fee;
+
+  /**
+     * Network: Kovan
+     * Oracle: 0xeD58607fD6D9ebc44e7A101a876EC86F44f118ee
+     * Job ID: 
+     * Fee: 1 LINK
+     */
   
+  /// @notice counting payments
   using Counters for Counters.Counter;
   Counters.Counter private paymentIDs;
 
+  address payable public subcontractor;
   /// @notice input data specific for the project
   struct InputData {
     string CID_listOfElementsAndGUIDs;
@@ -24,6 +37,7 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
     string CID_scheduleOfValues;
     string CID_rawProgressData;
     string CID_solutionUsedForProgressEvaluation;
+    string CID_currentPaymentProgress;
     uint256 value;
     bool paymentDone;
   }
@@ -35,7 +49,6 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
   /// @notice a list storing all of the lien tokens
   LienToken[] public lienTokens;
 
-  uint256 numPayment;
   mapping (uint256 => InputData) payments; 
 
   enum State { Created, InitialDataProvided, Agreed, Aborted }
@@ -67,24 +80,37 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
   event issueLienTokenMintedToSubcontractor(uint256);
   event issueLienTokenMintedToOwner(uint256);
 
-  constructor(string memory _projectName, string memory _projectNameShorthandName, address _subcontractor) ERC721(_projectName, _projectNameShorthandName) {
+  constructor(
+    string memory _projectName, 
+    string memory _projectNameShorthandName, 
+    address _subcontractor,
+    address _oracle, 
+    bytes32 _jobId, 
+    uint256 _fee, 
+    address _link
+    ) ERC721(_projectName, _projectNameShorthandName) {
     subcontractor = payable(_subcontractor);
+    if (_link == address(0)) {
+          setPublicChainlinkToken();
+      } else {
+          setChainlinkToken(_link);
+      }
+    setChainlinkOracle(_oracle);
+    oracle = _oracle;
+    // jobId = stringToBytes32(_jobId);
+    jobId = _jobId;
+    fee = _fee;
   }
 
   /// @notice Contractor (who should be also owner) deposits agreed value
-  /// @dev it would be suitable to check if the contract_value is equal to the value in agreement (job for Chainlink?)
   function deposit() external payable {
       emit PaymentDeposited();
   }
 
-  /*  
-    @notice Abort the contract and reclaim the ether.
-    Can only be called by the contractor before
-    the contract is agreed.
-  */
+  
 
   /// @notice provide initial data for the contract
- function provideInitialData(
+  function provideInitialData(
     string memory _CID_listOfElementsAndGUIDs,
     string memory _CID_scheduleOfValues,
     string memory _CID_solutionUsedForProgressEvaluation)
@@ -97,10 +123,17 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
       initial.CID_listOfElementsAndGUIDs = _CID_listOfElementsAndGUIDs;
       initial.CID_scheduleOfValues = _CID_scheduleOfValues;
       initial.CID_solutionUsedForProgressEvaluation = _CID_solutionUsedForProgressEvaluation;
+      initial.CID_currentPaymentProgress = "";
       initial.paymentDone = true;
       state = State.InitialDataProvided;
       emit InitialDataProvided();
  }
+
+  /**  
+    * @notice Abort the contract and reclaim the ether.
+    * Can only be called by the contractor before
+    * the contract is agreed.
+  */
 
   function abort() external onlyOwner inState(State.InitialDataProvided)
     {
@@ -118,34 +151,56 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
       emit ContractConfirmed();
   }
 
+  /// @notice create a new payment request providing new as-built model and progress data
+  /// @dev current paymentID is actually previous payment. 
+  /// PaymentIDs increment proceed in receiveUpdate function which records Chainlink fulfillment.
+  /// If it is a first payment CID_previousPaymentProgress is empty string.
+  /// @dev in case of request failing paymentIDs increment is applied after require statement in receiveUpdate
+  
+  function requestPayment(string memory _CID_asBuiltBIM, string memory _CID_rawProgressData) public inState(State.Agreed)
+  {
+      Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.receiveUpdate.selector);
+      
+      request.add("CID_asBuiltBIM", _CID_asBuiltBIM);
+      uint256 _paymentID = paymentIDs.current();
+      request.add("CID_previousPaymentProgress", payments[_paymentID].CID_currentPaymentProgress);
+      request.add("CID_scheduleOfValues", payments[0].CID_scheduleOfValues);
+      request.add("CID_listOfElementsAndGUIDs", payments[0].CID_listOfElementsAndGUIDs);
+      request.add("CID_rawProgressData", _CID_rawProgressData);
+      _paymentID += 1;
+      request.addUint("paymentID", _paymentID);
+      
+      requestOracleData(request, fee); 
+  }
+
   /// @notice receiveUpdate ensures the information is correctly formatted 
   /// before it triggers internal funtions to initiate on-chain payment settlement
   function receiveUpdate(
+    bytes32 _requestId, 
+    uint256 _value, 
+    string memory _CID_currentPaymentProgress,
     string memory _CID_listOfElementsAndGUIDs,
     string memory _CID_asBuiltBIM,
-    string memory _CID_scheduleOfValues,
+    // string memory _CID_scheduleOfValues,
     string memory _CID_rawProgressData,
-    string memory _CID_solutionUsedForProgressEvaluation,
-    uint256 _value) 
-    external 
-    inState(State.Agreed) 
-    returns (uint256 paymentID) {
+    string memory _CID_solutionUsedForProgressEvaluation
+    ) public recordChainlinkFulfillment(_requestId) {
       require(
-        (keccak256(abi.encodePacked(_CID_listOfElementsAndGUIDs)) == keccak256(abi.encodePacked(payments[0].CID_listOfElementsAndGUIDs)) &&
-        keccak256(abi.encodePacked(_CID_scheduleOfValues)) == keccak256(abi.encodePacked(payments[0].CID_scheduleOfValues)) && 
+        (keccak256(abi.encodePacked(_CID_listOfElementsAndGUIDs)) == keccak256(abi.encodePacked(payments[0].CID_listOfElementsAndGUIDs)) && 
         keccak256(abi.encodePacked(_CID_solutionUsedForProgressEvaluation)) == keccak256(abi.encodePacked(payments[0].CID_solutionUsedForProgressEvaluation))),
-        "Input data validation failed"
+        "Data validation failed with receiveUpdate"
       );
       
       /// @notice payment settlement
       paymentIDs.increment();
-      paymentID = paymentIDs.current();
+      uint256 paymentID = paymentIDs.current();
       InputData storage payment = payments[paymentID];
       payment.CID_listOfElementsAndGUIDs = _CID_listOfElementsAndGUIDs;
       payment.CID_asBuiltBIM = _CID_asBuiltBIM;
-      payment.CID_scheduleOfValues = _CID_scheduleOfValues;
+      // payment.CID_scheduleOfValues = _CID_scheduleOfValues;
       payment.CID_rawProgressData = _CID_rawProgressData;
       payment.CID_solutionUsedForProgressEvaluation = _CID_solutionUsedForProgressEvaluation;
+      payment.CID_currentPaymentProgress = _CID_currentPaymentProgress;
       payment.value = _value; 
       payment.paymentDone = false;
 
@@ -179,17 +234,17 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
     }
     
   } 
-  
-  
 
-  /// @notice get functions
+  /**
+    *  @notice get functions
+    */
   
   function getContractBalance() public view returns(uint256) {
     return address(this).balance;
   }
 
   function getNumberOfPaymentsDone() public view returns(uint256) {
-    return numPayment;
+    return paymentIDs.current();
   }
 
   function getLienToken(uint256 _paymentID) public view returns(uint256, string memory) {
@@ -204,18 +259,24 @@ contract AutonomousPayment is Ownable, ERC721URIStorage {
     string memory,
     string memory,
     string memory,
-    string memory,
     uint256,
     bool
   ) {
     return (
-      payments[_paymentID].CID_listOfElementsAndGUIDs,
       payments[_paymentID].CID_asBuiltBIM,
-      payments[_paymentID].CID_scheduleOfValues,
       payments[_paymentID].CID_rawProgressData,
       payments[_paymentID].CID_solutionUsedForProgressEvaluation,
+      payments[_paymentID].CID_currentPaymentProgress,
       payments[_paymentID].value,
       payments[_paymentID].paymentDone
     );
+  }
+
+  function getJobId() public view returns(bytes32) {
+    return jobId;
+  }
+
+  function getOracle() public view returns(address) {
+    return oracle;
   }
 }

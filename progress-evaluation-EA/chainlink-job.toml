@@ -1,0 +1,41 @@
+type = "directrequest"
+schemaVersion = 1
+name = "BIMsmart_v_0.6.1.alfa"
+contractAddress = "<OPERATOR.SOL CONTRACT ADDRESS>"
+maxTaskDuration = "0s"
+observationSource = """
+    decode_log   [type="ethabidecodelog"
+                  abi="OracleRequest(bytes32 indexed specId, address requester, bytes32 requestId, uint256 payment, address callbackAddr, bytes4 callbackFunctionId, uint256 cancelExpiration, uint256 dataVersion, bytes data)"
+                  data="$(jobRun.logData)"
+                  topics="$(jobRun.logTopics)"]
+
+    decode_cbor  [type="cborparse" data="$(decode_log.data)"]
+    fetch        [type="bridge" name="bimsmart" requestData="{\\"data\\": {\\"paymentID\\": $(decode_cbor.paymentID), \\"CID_scheduleOfValues\\": $(decode_cbor.CID_scheduleOfValues), \\"CID_listOfElementsAndGUIDs\\": $(decode_cbor.CID_listOfElementsAndGUIDs), \\"CID_asBuiltBIM\\": $(decode_cbor.CID_asBuiltBIM), \\"CID_rawProgressData\\": $(decode_cbor.CID_rawProgressData), \\"CID_previousPaymentProgress\\": $(decode_cbor.CID_previousPaymentProgress) }}" allowUnrestrictedNetworkAccess=true]
+    
+    decode_log -> decode_cbor -> fetch 
+    
+    parse_1        [type="jsonparse" path="value" data="$(fetch)"]
+    parse_2        [type="jsonparse" path="CID_currentPaymentProgress" data="$(fetch)"]
+    parse_3        [type="jsonparse" path="CID_listOfElementsAndGUIDs" data="$(fetch)"]
+    parse_4        [type="jsonparse" path="CID_asBuiltBIM" data="$(fetch)"]
+    parse_5        [type="jsonparse" path="CID_rawProgressData" data="$(fetch)"]
+    parse_6        [type="jsonparse" path="CID_solutionUsedForProgressEvaluation" data="$(fetch)"]
+
+    fetch -> parse_1 -> encode_data
+    fetch -> parse_2 -> encode_data
+    fetch -> parse_3 -> encode_data
+    fetch -> parse_4 -> encode_data
+    fetch -> parse_5 -> encode_data
+    fetch -> parse_6 -> encode_data
+
+    encode_data  [type="ethabiencode" abi="(bytes32 requestId, uint256 value, string CID_currentPaymentProgress, string CID_listOfElementsAndGUIDs, string CID_asBuiltBIM, string CID_rawProgressData, string CID_solutionUsedForProgressEvaluation)" data="{\\"requestId\\": $(decode_log.requestId), \\"value\\": $(parse_1), \\"CID_currentPaymentProgress\\": $(parse_2), \\"CID_listOfElementsAndGUIDs\\": $(parse_3), \\"CID_asBuiltBIM\\": $(parse_4), \\"CID_rawProgressData\\": $(parse_5), \\"CID_solutionUsedForProgressEvaluation\\": $(parse_6) }"]
+
+    encode_tx   [type="ethabiencode" 
+                abi="fulfillOracleRequest2(bytes32 requestId, uint256 payment, address callbackAddress, bytes4 callbackFunctionId, uint256 expiration, bytes calldata data)" 
+                data="{\\"requestId\\": $(decode_log.requestId), \\"payment\\":   $(decode_log.payment), \\"callbackAddress\\": $(decode_log.callbackAddr), \\"callbackFunctionId\\": $(decode_log.callbackFunctionId), \\"expiration\\": $(decode_log.cancelExpiration), \\"data\\": $(encode_data)}"
+                ]
+
+    submit_tx    [type="ethtx" to="<OPERATOR.SOL CONTRACT ADDRESS>" data="$(encode_tx)"]
+
+    encode_data -> encode_tx -> submit_tx
+"""

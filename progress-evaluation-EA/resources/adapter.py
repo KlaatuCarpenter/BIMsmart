@@ -34,7 +34,7 @@ class Update:
         return True
 
     def evaluate_progress_payment(self):
-        if self.id == '1':
+        if self.id == 1:
             payment_progress_0 = self.create_initial_payment_progress()
             inputFile = pd.read_excel(payment_progress_0, header = [0, 1], index_col = 0)
             os.remove(payment_progress_0)
@@ -72,11 +72,12 @@ class Update:
 
         try:
             res = common.util.save_file_in_ipfs(payment_progress_filename, payment_progress_filename)
-            self.CID_payment_progress = res['ResponseMetadata']['HTTPHeaders']['x-fleek-ipfs-hash']
+            self.CID_payment_progress = res['ResponseMetadata']['HTTPHeaders']['x-fleek-ipfs-hash-v0']
             # check CID of solution used for progress evaluation
             res_solution = common.util.save_file_in_ipfs(f'{self.id}_solution_used_for_progress_evaluation.py', 'resources/solution_used_for_progress_evaluation.py')
-            self.CID_solution = res_solution['ResponseMetadata']['HTTPHeaders']['x-fleek-ipfs-hash']
+            self.CID_solution = res_solution['ResponseMetadata']['HTTPHeaders']['x-fleek-ipfs-hash-v0']
             os.remove(payment_progress_filename)
+            self.result_success()
         except Exception as e:
             self.result_error(e)
             os.remove(payment_progress_filename)
@@ -144,7 +145,7 @@ class Update:
             'value': self.currentProgressValue,
             'total_contract_progress': self.totalProgressValue,
             'CID_currentPaymentProgress': self.CID_payment_progress,
-            'statusCode': 200
+            'statusCode': 200,
         }
 
     def result_error(self, error):

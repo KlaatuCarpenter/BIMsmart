@@ -1,5 +1,5 @@
 import pytest
-import resources.api
+import resources.adapter
 
 CID_scheduleOfValues = "bafybeicnte25pfv73l2eqmbmpfod3s4fll3gmjq7stungyv7755i6uddsm"
 CID_listOfElementsAndGUIDs = "CID_listOfElementsAndGUIDs"
