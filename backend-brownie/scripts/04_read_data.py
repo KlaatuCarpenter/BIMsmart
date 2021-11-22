@@ -11,3 +11,6 @@ def main():
     print(smartContract.getPaymentInfo(3))
     print(contractor.balance())
     print(subcontractor.balance())
+
+    firstpayment = smartContract.payments(1)
+    print(firstpayment)

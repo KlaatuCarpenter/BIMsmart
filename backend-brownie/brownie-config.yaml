@@ -22,13 +22,13 @@ networks:
     update_interval: 60
     verify: False
   kovan:
-    vrf_coordinator: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
+    # vrf_coordinator: '0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9'
     link_token: '0xa36085F69e2889c224210F603D836748e7dC0088'
-    keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
+    # keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
     fee: 1000000000000000000
     oracle: '0x37e962E585F93410d45aDfA80AeC976cB6D40d08'
     jobId: ${JOBID}
-    eth_usd_price_feed: '0x9326BFA02ADD2366b30bacB125260Af641031331'
+    # eth_usd_price_feed: '0x9326BFA02ADD2366b30bacB125260Af641031331'
     # Change to True if you have an Etherscan API key and want to verify
     verify: False
     update_interval: 60

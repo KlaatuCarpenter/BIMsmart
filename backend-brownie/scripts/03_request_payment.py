@@ -11,7 +11,7 @@ def main():
     update_tx = smartContract.requestPayment(
         "QmRdtGrtVgrfbVRn6y71iWyYMyHASe5cimFkpeqQ3PwSqF",
         "QmdX7GbhKqTpzh1tqFfWUwkWUXxF4hR4kAR84LeELPtcpv",
-        { "from": get_account(), "gas_limit": 10000000, "allow_revert": True }
+        { "from": get_account(), "allow_revert": True }
         
     )
     update_tx.wait(1)
