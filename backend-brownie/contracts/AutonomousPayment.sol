@@ -241,8 +241,16 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
     );
   }
 
-  function getJobId() public view returns(bytes32) {
-    return jobId;
+  function getInitialData() public view returns(
+    string memory,
+    string memory,
+    string memory
+  ) {
+    return(
+      initialData.CID_listOfElementsAndGUIDs,
+      initialData.CID_scheduleOfValues,
+      initialData.CID_solutionUsedForProgressEvaluation
+    );
   }
 
 }

@@ -27,7 +27,7 @@ networks:
     # keyhash: '0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4'
     fee: 1000000000000000000
     oracle: '0x37e962E585F93410d45aDfA80AeC976cB6D40d08'
-    jobId: ${JOBID}
+    jobId: '69fc5c9a5c5e4c26b9775d3a3495f963'
     # eth_usd_price_feed: '0x9326BFA02ADD2366b30bacB125260Af641031331'
     # Change to True if you have an Etherscan API key and want to verify
     verify: False
