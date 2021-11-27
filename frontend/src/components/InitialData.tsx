@@ -9,7 +9,7 @@ import {
 } from "mdb-react-ui-kit";
 import { LoadingButton } from "@mui/lab";
 import Button from '@mui/material/Button';
-import { useInitialData } from "../hooks";
+import { useProjectInfo } from "../hooks";
 import { submitToIpfs } from "../helpers";
 import { initTransaction } from "../helpers"
 import React, { useState } from "react";
@@ -18,11 +18,12 @@ import { UploadButton } from "./uploadButtons/UploadButton"
 
 export const InitialData = () => {
     /// reading from blockchain
-    const initialData = useInitialData()
+    const myProjectInfo = useProjectInfo()
 
-    const CID_listOfElementsAndGUIDs = initialData[0][0]
-    const CID_scheduleOfValues = initialData[0][1]
-    const CID_solutionUsedForProgressEvaluation = initialData[0][2]
+    const CID_listOfElementsAndGUIDs = myProjectInfo[5][0]
+    const CID_scheduleOfValues = myProjectInfo[5][1]
+    const CID_solutionUsedForProgressEvaluation = myProjectInfo[5][2]
+    console.log(CID_listOfElementsAndGUIDs)
 
     /// state variables used with input files
     const [listOfElementsAndGUIDs_CID, setListOfElementsAndGUIDs_CID] = useState<string | undefined>();
@@ -146,7 +147,7 @@ export const InitialData = () => {
                     <MDBCardTitle>{CID_listOfElementsAndGUIDs ? 'Initial Contract Data' : 'Provide Initial Contract Data'}</MDBCardTitle>
                     <MDBCardText>
                         {
-                            initialData ? (
+                            (CID_listOfElementsAndGUIDs && CID_scheduleOfValues && CID_solutionUsedForProgressEvaluation) ? (
                                 <MDBListGroup flush>
                                     <MDBListGroupItem tag="a" href={CID_listOfElementsAndGUIDs}>
                                         CID_listOfElementsAndGUIDs: {CID_listOfElementsAndGUIDs}
@@ -171,7 +172,7 @@ export const InitialData = () => {
                                         })
                                     }
                                     {
-                                        (listOfElementsAndGUIDs_CID && scheduleOfValues_CID && solutionUsedForProgressEvaluation_CID) ? (
+                                        (listOfElementsAndGUIDs && scheduleOfValues && solutionUsedForProgressEvaluation) ? (
                                             <LoadingButton
                                                 fullWidth
                                                 onClick={handleSaveToIpfs}

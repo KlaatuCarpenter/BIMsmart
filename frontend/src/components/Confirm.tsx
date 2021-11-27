@@ -1,6 +1,6 @@
 import { useEthers } from "@usedapp/core";
 import { initTransaction } from "../helpers";
-import { MDBContainer, MDBCard, MDBCardBody, MDBCardText, MDBListGroup, MDBListGroupItem } from "mdb-react-ui-kit";
+import { MDBContainer, MDBCard, MDBCardBody, MDBCardText } from "mdb-react-ui-kit";
 import { LoadingButton } from "@mui/lab";
 import React, { useState } from "react";
 

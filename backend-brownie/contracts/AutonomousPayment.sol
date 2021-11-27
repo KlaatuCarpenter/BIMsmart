@@ -41,7 +41,7 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
   }
   
   mapping (uint256 => PaymentData) public payments;  
-  uint256[] public lienTokens; 
+  string[] public lienTokens; 
 
   enum State { Created, InitialDataProvided, Agreed, Aborted }
   State public state;
@@ -217,8 +217,6 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
     *  @notice get functions
     */
   
-
-
   function getNumberOfPaymentsDone() public view returns(uint256) {
     return paymentIDs.current();
   }

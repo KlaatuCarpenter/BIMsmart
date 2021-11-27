@@ -5,6 +5,8 @@ Autonomous payment solution in construction project supported with building info
 [Project schema](img/project-schema.jpg)
 [IPFS role schema](img/ipfs-role-schema.jpg)
 
+Inspiration comes from the article of Hesam Hamledari: [link]https://www.researchgate.net/publication/344972443_Construction_Payment_Automation_Using_Blockchain-Enabled_Smart_Contracts_and_Robotic_Reality_Capture_Technologies
+
 ## Environment
 This project has a couple of parts, which are in seperate folders:
 1) Smart contract

@@ -81,12 +81,7 @@ export const useProjectInfo = (): any[] => {
       ];
 
   const contractState = contractStates[parseInt(String(state))]
-
-  let initialDataIpfs: string[] = [];
-  initialData?.map((CID) => {
-    initialDataIpfs.push(`https://ipfs.io/ipfs/${CID}`);
-    return initialDataIpfs;
-  });
+  console.log(initialData)
 
   return [
     projectName,
@@ -94,7 +89,7 @@ export const useProjectInfo = (): any[] => {
     contractor,
     subcontractor,
     contractState,
-    initialDataIpfs,
+    initialData,
     numberOfPaymentsDone,
   ];
 };

@@ -23,9 +23,7 @@ export const Main = () => {
   const contractor = String(projectInfo[2]);
   const subcontractor = String(projectInfo[3]);
   const state = projectInfo[4];
-  console.log('state: ' + state)
-  console.log(typeof (state))
-  console.log(state === states[2])
+
 
   /** 
     # Logic of rendering:
@@ -49,7 +47,7 @@ export const Main = () => {
       {(account === contractor || account === subcontractor) ?
         <>
           <LienToken />
-          <InitialData />
+          {(account === subcontractor && state === states[0]) ? <></> : <InitialData />}
         </>
         : <></>}
 
