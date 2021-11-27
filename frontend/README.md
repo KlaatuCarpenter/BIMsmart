@@ -1,3 +1,12 @@
+# Frontend for BIMsmart
+## providing ABI of smart contract
+Before running frontend it is neccessary to provide ABI in folder frontend.
+This script [link]backend-brownie/scripts/update_frontend.py does it.
+[Readme](README.md)
+
+## .env
+To be able to send files to IPFS network you need to create .env according to .env.example file and provide essential keys for [link]https://fleek.co/storage/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
