@@ -1,16 +1,19 @@
 import { useEthers } from "@usedapp/core";
-import { MDBBtn } from 'mdb-react-ui-kit';
+import Button from '@mui/material/Button';
+import {MDBContainer} from "mdb-react-ui-kit";
 
 export const Header = () => {
   const { activateBrowserWallet, deactivate, account } = useEthers();
 
 
   return (
-    <div className='d-flex justify-content-end'>
-      {!account && <MDBBtn onClick={() => activateBrowserWallet()}> Connect </MDBBtn>}
-      {account && <MDBBtn onClick={deactivate}> Disconnect </MDBBtn>}
+    <MDBContainer>
+    <div className='d-flex justify-content-end mt-3'>
+      {!account && <Button variant="contained" onClick={() => activateBrowserWallet()}> Connect </Button>}
+      {account && <Button variant="outlined" onClick={deactivate}> Disconnect </Button>}
 
   
     </div>
+    </MDBContainer>
   );
 };

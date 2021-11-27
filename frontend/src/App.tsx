@@ -1,8 +1,6 @@
 import React from "react";
 import { DAppProvider, ChainId } from "@usedapp/core";
-import { Header } from "./components/Header";
 import { Main } from "./components/Main";
-import { MDBContainer } from "mdb-react-ui-kit";
 
 const config = {
     supportedChains: [ChainId.Kovan],
@@ -15,10 +13,11 @@ const config = {
 function App() {
   return (
     <DAppProvider config={config}>
-      <MDBContainer>
-        <Header />
+      
+        {/* <Header /> */}
         <Main />
-      </MDBContainer>
+        
+      
     </DAppProvider>
   );
 }

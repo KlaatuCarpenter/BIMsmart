@@ -12,6 +12,7 @@ input_data_used_for_valuation
 .env.chainlinknode
 .env.mock-progress
 .env.ea
+kovan/
 
 # React stuff
 ## dependencies

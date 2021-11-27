@@ -40,7 +40,8 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
     uint256 value;
   }
   
-  mapping (uint256 => PaymentData) public payments;   
+  mapping (uint256 => PaymentData) public payments;  
+  uint256[] public lienTokens; 
 
   enum State { Created, InitialDataProvided, Agreed, Aborted }
   State public state;
@@ -202,6 +203,7 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
     if (payments[_paymentID].paymentDone) {
       _safeMint(owner(), _paymentID);
       _setTokenURI(_paymentID, payments[_paymentID].lienTokenMetaData);
+      lienTokens.push(payments[_paymentID].lienTokenMetaData);
       emit issueLienTokenMintedToSubcontractor(_paymentID);
     } else {
       _safeMint(subcontractor, _paymentID);    
@@ -215,9 +217,7 @@ contract AutonomousPayment is Ownable, ERC721URIStorage, ChainlinkClient {
     *  @notice get functions
     */
   
-  function getContractBalance() public view returns(uint256) {
-    return address(this).balance;
-  }
+
 
   function getNumberOfPaymentsDone() public view returns(uint256) {
     return paymentIDs.current();
