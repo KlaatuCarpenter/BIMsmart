@@ -57,7 +57,7 @@ export const ProjectInfo = () => {
                   Contract balance: {contractBalance ? (ethers.utils.formatEther(contractBalance)) : ('0')} ETH
                 </MDBListGroupItem>
                 <MDBListGroupItem>
-                  Number of payments done: {myProjectNumberOfPaymentsDone}
+                  Number of payments processed: {myProjectNumberOfPaymentsDone}
                 </MDBListGroupItem>
               </MDBListGroup>
             )}

@@ -1,11 +1,11 @@
 # BIMsmart
 ## About 
 Autonomous payment solution in construction project supported with building information modeling and blockchain.
-[Idea schema of the project](img/idea-schema.jpg)
-[Project schema](img/project-schema.jpg)
-[IPFS role schema](img/ipfs-role-schema.jpg)
+[Idea schema of the project](img/idea-schema.jpg)  
+[Project schema](img/project-schema.jpg)  
+[IPFS role schema](img/ipfs-role-schema.jpg)  
 
-Inspiration comes from the article of Hesam Hamledari: [link]https://www.researchgate.net/publication/344972443_Construction_Payment_Automation_Using_Blockchain-Enabled_Smart_Contracts_and_Robotic_Reality_Capture_Technologies
+Inspiration comes from the work of Hesam Hamledari: [link](https://www.researchgate.net/publication/344972443_Construction_Payment_Automation_Using_Blockchain-Enabled_Smart_Contracts_and_Robotic_Reality_Capture_Technologies)
 
 ## Environment
 This project has a couple of parts, which are in seperate folders:
@@ -20,12 +20,12 @@ To run this project it is neccesary to run firstly:
 
 ### Running chainlink node 
 Specific tutorial how to run chainlink node here:
-[a link]https://docs.chain.link/docs/running-a-chainlink-node/
+[link]https://docs.chain.link/docs/running-a-chainlink-node/
 
 To run a node in Docker created with the tutorial above:
 cd ~/.chainlink-kovan && docker run -p 6688:6688 -v ~/.chainlink-kovan:/chainlink -it --env-file=.env smartcontract/chainlink:<version> local n
 
-Latest <version> can be found here: [a link]https://github.com/smartcontractkit/chainlink
+Latest <version> can be found here: [link]https://github.com/smartcontractkit/chainlink
 
 In this case we used external provider for network: Alchemy. Websockets are in .env file in .chainlink-kovan.
 Database running with postgresql: pgAdmin4.
@@ -37,14 +37,14 @@ For testing purpouses on Kovan ETH_GAS_LIMIT_DEFAULT=10000000 works. I didn't tr
 In file [link]progress-evaluation-EA/chainlink-job.toml
 
 ### Bridge in chainlink node specification:
-Name	bimsmart
-URL:	<progress-evaluation-EA_url>
+Name	bimsmart  
+URL:	<progress-evaluation-EA_url>  
 
 ### Running external adapter
 On localhost just command "py app.py"
 
 ### Running frontend
-Before running frontend it is neccessary to provide ABI in folder frontend.
-This script [link]backend-brownie/scripts/update_frontend.py does it for you.
-[Readme](frontend/README.md)
+Before running frontend it is neccessary to provide ABI in folder frontend.  
+This script [link]backend-brownie/scripts/update_frontend.py does it for you.  
+[Readme of frontend](frontend/README.md)
 

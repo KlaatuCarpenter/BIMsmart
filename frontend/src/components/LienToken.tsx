@@ -28,6 +28,7 @@ export const LienToken = () => {
     const { chainId } = useEthers();
     const [callingMetadata, setCallingMetadata] = useState<boolean>(false);
     const [metadata, setMetadata] = useState<string[]>([]);
+    const [tokensOwners, setTokenOwner] = useState<string[]>([]);
 
     const showMetadata = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -37,8 +38,10 @@ export const LienToken = () => {
 
         const autonomousPaymentContract = await initTransaction(chainId)
         const tokenUri = await autonomousPaymentContract.tokenURI(tokenId);
+        const tokenOwner = await autonomousPaymentContract.ownerOf(tokenId);
         setCallingMetadata(false);
-        setMetadata([...metadata, tokenUri])
+        setMetadata([...metadata, tokenUri]);
+        setTokenOwner([...tokensOwners, tokenOwner]);
 
     }
 
@@ -60,10 +63,12 @@ export const LienToken = () => {
                                         <MDBCardText>
                                             {
                                                 metadata[tokenId - 1] ? (
-                                                    <a href={'http://ipfs.io/ipfs/' + metadata[tokenId - 1]} target="_blank">
-                                                        {metadata[tokenId - 1]}
-                                                    </a>
-
+                                                    <>
+                                                        <p>Owner: {tokensOwners[tokenId - 1]}</p>
+                                                        <a href={'http://ipfs.io/ipfs/' + metadata[tokenId - 1]} target="_blank">
+                                                            {metadata[tokenId - 1]}
+                                                        </a>
+                                                    </>
                                                 ) : (
                                                     <LoadingButton
                                                         fullWidth
